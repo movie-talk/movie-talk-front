@@ -1,22 +1,213 @@
 <!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>movie-talk</title>
-    <link
-      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
-      rel="stylesheet"
-    />
-    <link
-      rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css"
-    />
-    <link rel="stylesheet" href="styles.css" />
-  </head>
-  <body>
+<html lang="ko">
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="main.js"></script>
-  </body>
+<head>
+  <title>Movie Talk</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  
+  <link href="styles.css" rel="stylesheet">
+</head>
+
+<body>
+
+  <div class="container-fluid p-5 text-white text-center custom-header">
+    <h1>Movie Talk</h1>
+    <p>영화에 대한 자유로운 대화 공간</p>
+    <nav class="navbar navbar-expand-sm bg-light justify-content-center">
+      <div class="container-fluid">
+        <ul class="navbar-nav">
+          <li class="nav-item">
+            <a class="nav-link" href="#">영화 리뷰 보기</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">평점 따라 보기</a>
+          </li>
+        </ul>
+      </div>
+
+      <button type="button" class="btn btn-login m-2 text-white" data-bs-toggle="modal" data-bs-target="#loginModal" onclick="validateLogin()">
+        Login
+      </button>
+
+      <button type="button" class="btn btn-signup m-2 text-white" data-bs-toggle="modal" data-bs-target="#signupModal" onclick="validateSignup()">
+        signup
+      </button>
+
+    </nav>
+  </div>
+  
+  
+  <!-- 로그인 모달 -->
+  <div class="modal" id="loginModal">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title">로그인 하세요.</h4>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <div class="row mb-3">
+            <div class="col-12">
+              아이디
+              <input type="text" class="form-control" id="loginId" placeholder="Input your ID">
+              <div id="idError" class="text-danger" style="display:none;">아이디는 6~12자의 영문 대소문자와 숫자만 가능합니다.</div>
+            </div>
+          </div>
+          <div class="row mb-3">
+            <div class="col-12">
+              비밀번호
+              <input type="password" class="form-control" id="loginPassword" placeholder="Input your password">
+              <div id="passwordError" class="text-danger" style="display:none;">비밀번호는 최소 8자, 영문, 숫자, 특수문자를 포함해야 합니다.</div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-primary" onclick="validateLogin()">로그인</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- 회원가입 모달 -->
+  <div class="modal" id="signupModal">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title">회원가입</h4>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <div class="row mb-3">
+            <div class="col-12">
+              아이디
+              <input type="text" class="form-control" id="signupId" placeholder="Create your ID">
+              <div id="signupIdError" class="text-danger" style="display:none;">아이디는 6~12자의 영문 대소문자와 숫자만 가능합니다.</div>
+            </div>
+          </div>
+          <div class="row mb-3">
+            <div class="col-12">
+              비밀번호
+              <input type="password" class="form-control" id="signupPassword" placeholder="Create your password">
+              <div id="signupPasswordError" class="text-danger" style="display:none;">비밀번호는 최소 8자, 영문, 숫자, 특수문자를 포함해야 합니다.</div>
+            </div>
+          </div>
+          <div class="row mb-3">
+            <div class="col-12">
+              이메일
+              <input type="email" class="form-control" id="signupEmail" placeholder="Enter your email">
+              <div id="signupEmailError" class="text-danger" style="display:none;">유효한 이메일 주소를 입력해주세요.</div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-primary" onclick="validateSignup()">회원가입</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+
+
+  <div class="container mt-5">
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-4 gy-5 gx-4">
+
+      <div class="col">
+        <div class="card text-center">
+          <img class="card-img-top" src="img/elemental.jpg" alt="엘리멘탈">
+          <div class="card-body">
+            <h4 class="card-title">엘리멘탈</h4>
+            <p class="card-text">개념의 시각화와 공간적 상상력에서 창의성이 빛난다.</p>
+            <a href="#" class="btn btn-primary">자세히 보기</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="col">
+        <div class="card text-center">
+          <img class="card-img-top" src="img/insideout.jpg" alt="인사이드 아웃 2">
+          <div class="card-body">
+            <h4 class="card-title">인사이드 아웃 2</h4>
+            <p class="card-text">그 모든 게 나였다. 그 전부가 세월이었다. 하나도 남김없이.</p>
+            <a href="#" class="btn btn-primary">자세히 보기</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="col">
+        <div class="card text-center">
+          <img class="card-img-top" src="img/toystory3.jpg" alt="토이 스토리 3">
+          <div class="card-body">
+            <h4 class="card-title">토이 스토리 3</h4>
+            <p class="card-text">어떤 이별은 그저 그들 사이에 시간이 흘러갔기 때문에 찾아온다.</p>
+            <a href="#" class="btn btn-primary">자세히 보기</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="col">
+        <div class="card text-center">
+          <img class="card-img-top" src="img/up.webp" alt="업">
+          <div class="card-body">
+            <h4 class="card-title">업</h4>
+            <p class="card-text">사랑하는 사람과 함께하는 순간이야말로 최고의 모험.</p>
+            <a href="#" class="btn btn-primary">자세히 보기</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="col">
+        <div class="card text-center">
+          <img class="card-img-top" src="img/elemental.jpg" alt="엘리멘탈">
+          <div class="card-body">
+            <h4 class="card-title">엘리멘탈</h4>
+            <p class="card-text">개념의 시각화와 공간적 상상력에서 창의성이 빛난다.</p>
+            <a href="#" class="btn btn-primary">자세히 보기</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="col">
+        <div class="card text-center">
+          <img class="card-img-top" src="img/insideout.jpg" alt="인사이드 아웃 2">
+          <div class="card-body">
+            <h4 class="card-title">인사이드 아웃 2</h4>
+            <p class="card-text">그 모든 게 나였다. 그 전부가 세월이었다. 하나도 남김없이.</p>
+            <a href="#" class="btn btn-primary">자세히 보기</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="col">
+        <div class="card text-center">
+          <img class="card-img-top" src="img/toystory3.jpg" alt="토이 스토리 3">
+          <div class="card-body">
+            <h4 class="card-title">토이 스토리 3</h4>
+            <p class="card-text">어떤 이별은 그저 그들 사이에 시간이 흘러갔기 때문에 찾아온다.</p>
+            <a href="#" class="btn btn-primary">자세히 보기</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="col">
+        <div class="card text-center">
+          <img class="card-img-top" src="img/up.webp" alt="업">
+          <div class="card-body">
+            <h4 class="card-title">업</h4>
+            <p class="card-text">사랑하는 사람과 함께하는 순간이야말로 최고의 모험.</p>
+            <a href="#" class="btn btn-primary">자세히 보기</a>
+          </div>
+        </div>
+      </div>
+
+    </div> 
+  </div>
+
+  <script src="main.js"></script>
+</body>
+
 </html>
