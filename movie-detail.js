@@ -55,7 +55,8 @@ function displayMovieDetails(movie) {
     document.body.style.backgroundSize = "cover";
     document.body.style.backgroundAttachment = "fixed";
     document.body.style.backgroundPosition = "center";
-    document.querySelector("main").style.color = "#fff";
+  } else {
+    document.body.style.backgroundColor = "#060b2dff";
   }
 
   movieDetailContainer.innerHTML = `
