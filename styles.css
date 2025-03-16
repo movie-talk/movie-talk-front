@@ -1,20 +1,42 @@
-.custom-header {
-  background: linear-gradient(135deg, #000000, #9c0b23);
-  color: white;
+.main-bg {
+  background-color: #060b2dff;
 }
 
-.btn-login {
-  background-color: #1c1b1d;
+.movie-card {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  height: 100%;
 }
 
-.btn-login:hover {
-  background-color: #8d1111; 
+.movie-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
 }
 
-.btn-signup {
-  background-color: #1c1b1d;
+.movie-poster {
+  height: 300px;
+  object-fit: cover;
 }
 
-.btn-signup:hover {
-  background-color: #8d1111; 
+.star-rating {
+  direction: rtl;
+  display: inline-block;
+  cursor: pointer;
+}
+
+.star-rating input {
+  display: none;
+}
+
+.star-rating label {
+  color: #ddd;
+  font-size: 24px;
+  padding: 0 2px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.star-rating label:hover,
+.star-rating label:hover ~ label,
+.star-rating input:checked ~ label {
+  color: #ffc107;
 }
