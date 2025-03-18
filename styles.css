@@ -40,3 +40,26 @@
 .star-rating input:checked ~ label {
   color: #ffc107;
 }
+
+#loginOk {
+  background-color: #1c1b1d;
+}
+
+#loginOk:hover {
+  background-color: #8d1111; 
+}
+
+#signupOk {
+  background-color: #1c1b1d;
+}
+
+#signupOk:hover {
+  background-color: #8d1111; 
+}
+
+#loginClose{
+  background-color: #8d1111; 
+}
+#signupClose{
+  background-color: #8d1111; 
+}
