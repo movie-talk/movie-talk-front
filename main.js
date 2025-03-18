@@ -21,7 +21,6 @@ function validatePasswordConfirm() {
     return true;
   }
 }
-
 function validateInputWithDebounce(inputId, errorElementId, regex, formType) {
   // 이전의 타이머를 지운다.
   clearTimeout(debounceTimer);
@@ -133,90 +132,39 @@ document
     validateForm("signup"); // 회원가입 폼 유효성 검사
   });
 
-// 로그인 버튼 클릭 시
-document.getElementById("loginOk").addEventListener("click", () => {
-  const isIdValid = validateImmediately("loginId", null, idRegex);
-  const isPasswordValid = validateImmediately(
-    "loginPassword",
-    null,
-    passwordRegex
-  );
-
-  if (isIdValid && isPasswordValid) {
-    alert("로그인 성공");
-
-    // 로그인 모달 닫기
-    const loginModalElement = document.getElementById("loginModal");
-    const loginModal =
-      bootstrap.Modal.getInstance(loginModalElement) ||
-      new bootstrap.Modal(loginModalElement);
-    loginModal.hide();
-  } else {
-    alert("로그인 정보를 다시 확인하세요.");
-  }
-});
-
-// 회원가입 버튼 클릭 시
-document.getElementById("signupOk").addEventListener("click", () => {
-  const isIdValid = validateImmediately("signupId", "idError", idRegex);
-  const isPasswordValid = validateImmediately(
-    "signupPassword",
-    "passwordError",
-    passwordRegex
-  );
-  const isNicknameValid = validateImmediately(
-    "signupNickname",
-    "nicknameError",
-    nicknameRegex
-  );
-  const isPasswordConfirmValid = validatePasswordConfirm();
-
-  if (
-    isIdValid &&
-    isPasswordValid &&
-    isNicknameValid &&
-    isPasswordConfirmValid
-  ) {
-    alert("회원가입 성공");
-
-    // 회원가입 모달 닫기
-    const signupModalElement = document.getElementById("signupModal");
-    const signupModal =
-      bootstrap.Modal.getInstance(signupModalElement) ||
-      new bootstrap.Modal(signupModalElement);
-    signupModal.hide();
-  } else {
-    alert("입력한 정보를 다시 확인하세요.");
-  }
-});
 
 // 모달이 닫힐 때 입력 필드 초기화
 document
   .getElementById("loginModal")
   .addEventListener("hidden.bs.modal", () => {
-    document.getElementById("loginId").value = "";
-    document.getElementById("loginPassword").value = "";
+    document.getElementById("loginForm").reset();
     document.getElementById("loginOk").disabled = true;
   });
 
 document
   .getElementById("signupModal")
   .addEventListener("hidden.bs.modal", () => {
-    document.getElementById("signupId").value = "";
-    document.getElementById("signupPassword").value = "";
-    document.getElementById("signupPasswordConfirm").value = ""; // 비밀번호 확인 필드 초기화
-    document.getElementById("signupNickname").value = "";
+    document.getElementById("signupForm").reset();
     document.getElementById("signupOk").disabled = true;
 
     document.getElementById("idError").style.display = "none";
     document.getElementById("passwordError").style.display = "none";
     document.getElementById("nicknameError").style.display = "none";
-    document.getElementById("passwordConfirmError").style.display = "none"; // 비밀번호 확인 오류 메시지 숨기기
+    document.getElementById("passwordConfirmError").style.display = "none";
   });
 
 document.addEventListener("DOMContentLoaded", () => {
   fetchMovies();
 });
+
+
+
+
+
+
+
+
+
 
 const fetchMovies = async () => {
   try {
@@ -272,3 +220,73 @@ const displayMovies = (movies) => {
     moviesContainer.appendChild(movieCard);
   });
 };
+
+
+// 회원가입 폼 제출 처리
+document.getElementById('signupForm').addEventListener('submit', async function (event) {
+  event.preventDefault(); // 폼 제출 시 페이지 새로고침 방지
+
+  const signupId = document.getElementById('signupId').value;
+  const signupPassword = document.getElementById('signupPassword').value;
+  const signupPasswordConfirm = document.getElementById('signupPasswordConfirm').value;
+  const signupNickname = document.getElementById('signupNickname').value;
+
+  // 입력 값 검증
+  if (signupPassword !== signupPasswordConfirm) {
+    document.getElementById('passwordConfirmError').style.display = 'block';
+    return;
+  } else {
+    document.getElementById('passwordConfirmError').style.display = 'none';
+  }
+
+  try {
+    // API 호출 (회원가입)
+    const response = await axios.post('http://localhost:8080/users/signup', {
+      id: signupId,
+      password: signupPassword,
+      nickname: signupNickname
+    });
+
+    // 성공적으로 회원가입된 경우
+    alert(response.data); // "회원가입 성공" 메시지
+    document.getElementById('signupClose').click(); // 모달 닫기
+  } catch (error) {
+    if (error.response) {
+      // 서버에서 반환한 에러 메시지
+      alert(error.response.data);
+    } else {
+      alert('회원가입 실패. 서버 오류.');
+    }
+  }
+});
+
+// 로그인 폼 제출 처리
+document.getElementById('loginForm').addEventListener('submit', async function (event) {
+  event.preventDefault(); // 폼 제출 시 페이지 새로고침 방지
+
+  const loginId = document.getElementById('loginId').value;
+  const loginPassword = document.getElementById('loginPassword').value;
+
+  try {
+    // API 호출 (로그인)
+    const response = await axios.post('http://localhost:8080/users/login', {
+      id: loginId,
+      password: loginPassword
+    });
+
+    // 로그인 성공 시
+    alert(response.data); // "로그인 성공"
+    document.getElementById('loginClose').click(); // 모달 닫기
+
+    // 로그인 후 처리 예시 (세션 관리 등)
+    // 예: 로그인 후 화면에 사용자 정보 표시 등 추가 작업
+
+  } catch (error) {
+    if (error.response) {
+      // 서버에서 반환한 에러 메시지
+      alert(error.response.data); // 로그인 실패 메시지
+    } else {
+      alert('로그인 실패. 서버 오류.');
+    }
+  }
+});
