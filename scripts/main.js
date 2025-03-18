@@ -241,7 +241,7 @@ document.getElementById('signupForm').addEventListener('submit', async function 
 
   try {
     // API 호출 (회원가입)
-    const response = await axios.post('http://localhost:8080/users/signup', {
+    const response = await axios.post(`${BASE_URL}/users/signup`, {
       id: signupId,
       password: signupPassword,
       nickname: signupNickname
@@ -255,7 +255,7 @@ document.getElementById('signupForm').addEventListener('submit', async function 
       // 서버에서 반환한 에러 메시지
       alert(error.response.data);
     } else {
-      alert('회원가입 실패. 서버 오류.');
+      alert(error.response.data);
     }
   }
 });
@@ -269,7 +269,7 @@ document.getElementById('loginForm').addEventListener('submit', async function (
 
   try {
     // API 호출 (로그인)
-    const response = await axios.post('http://localhost:8080/users/login', {
+    const response = await axios.post(`${BASE_URL}/users/login`, {
       id: loginId,
       password: loginPassword
     });
@@ -284,9 +284,9 @@ document.getElementById('loginForm').addEventListener('submit', async function (
   } catch (error) {
     if (error.response) {
       // 서버에서 반환한 에러 메시지
-      alert(error.response.data); // 로그인 실패 메시지
+      alert(error.response.data); 
     } else {
-      alert('로그인 실패. 서버 오류.');
+      alert(error.response.data);
     }
   }
 });
