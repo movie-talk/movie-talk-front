@@ -42,9 +42,10 @@ function displayMovieDetails(movie) {
 
   if (!movieDetailContainer) return;
 
-  const posterPath = movie.poster_path
-    ? `https://image.tmdb.org/t/p/w500${movie.poster_path}`
-    : "https://via.placeholder.com/500x750?text=No+Image";
+  const hasPoster = movie.poster_path;
+  const posterContent = hasPoster
+    ? `<img src="https://image.tmdb.org/t/p/w500${movie.poster_path}" class="img-fluid rounded shadow" alt="${movie.title}">`
+    : `<div class="detail-poster">이미지 준비중입니다.</div>`;
 
   const backdropPath = movie.backdrop_path
     ? `https://image.tmdb.org/t/p/w500${movie.backdrop_path}`
@@ -61,9 +62,7 @@ function displayMovieDetails(movie) {
 
   movieDetailContainer.innerHTML = `
         <div class="col-md-4 mb-4">
-            <img src="${posterPath}" class="img-fluid rounded shadow" alt="${
-    movie.title
-  }">
+            ${posterContent}
         </div>
         <div class="col-md-8">
             <h1 class="mb-3">${movie.title}</h1>
