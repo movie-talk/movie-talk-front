@@ -1,7 +1,9 @@
 .main-bg {
   background-color: #060b2dff;
 }
-
+.nav-item {
+  list-style: none; 
+}
 .movie-card {
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   height: 100%;
@@ -63,3 +65,14 @@
 #signupClose{
   background-color: #8d1111; 
 }
+
+.custom-btn {
+  background-color: #ff5733; 
+  color: white; 
+  border: none; 
+}
+
+.custom-btn:hover {
+  background-color: #e04e2a; 
+}
+

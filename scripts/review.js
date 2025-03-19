@@ -422,7 +422,9 @@ function displayMovies2(movies) {
                         ? movie.vote_average.toFixed(1)
                         : "정보 없음"
                     }/10</p>
-                    <a href="movie-detail.html?id=${movie.id}" class="btn custom-btn w-100">상세 정보</a>
+                    <a href="movie-detail.html?id=${
+                      movie.id
+                    }" class="btn btn-primary w-100">상세 정보</a>
                 </div>
             </div>
         `;
