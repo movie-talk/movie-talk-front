@@ -238,27 +238,41 @@ document.getElementById('signupForm').addEventListener('submit', async function 
   } else {
     document.getElementById('passwordConfirmError').style.display = 'none';
   }
-
   try {
-    // API 호출 (회원가입)
+    // 아이디 중복 체크
+    const idCheckResponse = await axios.post(`${BASE_URL}/users/check-id`, {
+      id: signupId
+    });
+
+    if (idCheckResponse.data.exists) {
+      alert("중복된 아이디입니다.");
+      return;
+    }
+
+    // 닉네임 중복 체크
+    const nicknameCheckResponse = await axios.post(`${BASE_URL}/users/check-nickname`, {
+      nickname: signupNickname
+    });
+
+    if (nicknameCheckResponse.data.exists) {
+      alert("중복된 닉네임입니다.");
+      return;
+    }
+
     const response = await axios.post(`${BASE_URL}/users/signup`, {
       id: signupId,
       password: signupPassword,
       nickname: signupNickname
     });
-
+  
     // 성공적으로 회원가입된 경우
     alert(response.data); // "회원가입 성공" 메시지
     document.getElementById('signupClose').click(); // 모달 닫기
   } catch (error) {
-    if (error.response) {
-      // 서버에서 반환한 에러 메시지
-      alert(error.response.data);
-    } else {
-      alert(error.response.data);
-    }
+    alert(error.response.data); 
   }
 });
+
 
 // 로그인 폼 제출 처리
 document.getElementById('loginForm').addEventListener('submit', async function (event) {
@@ -266,27 +280,17 @@ document.getElementById('loginForm').addEventListener('submit', async function (
 
   const loginId = document.getElementById('loginId').value;
   const loginPassword = document.getElementById('loginPassword').value;
-
   try {
     // API 호출 (로그인)
     const response = await axios.post(`${BASE_URL}/users/login`, {
       id: loginId,
       password: loginPassword
-    });
+    }, { withCredentials: true });
 
     // 로그인 성공 시
     alert(response.data); // "로그인 성공"
     document.getElementById('loginClose').click(); // 모달 닫기
-
-    // 로그인 후 처리 예시 (세션 관리 등)
-    // 예: 로그인 후 화면에 사용자 정보 표시 등 추가 작업
-
   } catch (error) {
-    if (error.response) {
-      // 서버에서 반환한 에러 메시지
-      alert(error.response.data); 
-    } else {
-      alert(error.response.data);
-    }
+    alert(error.response.data); 
   }
 });
