@@ -157,15 +157,6 @@ document.addEventListener("DOMContentLoaded", () => {
   fetchMovies();
 });
 
-
-
-
-
-
-
-
-
-
 const fetchMovies = async () => {
   try {
     const response = await axios.get(
@@ -221,6 +212,78 @@ const displayMovies = (movies) => {
   });
 };
 
+async function checkIdAvailability() {
+  const signupId = document.getElementById("signupId").value;
+  const errorElement = document.getElementById("idError");
+
+  if (!idRegex.test(signupId)) {
+    errorElement.style.display = "block";
+    errorElement.textContent = "아이디는 6~12자의 영문, 숫자로 입력해야 합니다.";
+    return;
+  }
+
+  try {
+    console.log(`Checking ID: ${signupId}`);
+
+    const response = await axios.post(`${BASE_URL}/users/check-id`, {
+      id: signupId
+    });
+
+    console.log("Server Response:", response.data);
+
+    if (response.data.exists) {
+      errorElement.style.display = "block";
+      errorElement.textContent = "이미 사용 중인 아이디입니다.";
+    } else {
+      errorElement.style.display = "none";
+    }
+  } catch (error) {
+    console.error("아이디 중복 검사 오류:", error.response?.data || error.message);
+    errorElement.style.display = "block";
+    errorElement.textContent = "아이디 중복 검사를 할 수 없습니다.";
+  }
+}
+
+
+
+
+async function checkNicknameAvailability() {
+  const signupNickname = document.getElementById("signupNickname").value;
+  const errorElement = document.getElementById("nicknameError");
+
+  if (!nicknameRegex.test(signupNickname)) {
+    errorElement.style.display = "block";
+    errorElement.textContent = "닉네임은 2~10자의 한글, 영문, 숫자로 입력해야 합니다.";
+    return;
+  }
+
+  try {
+    const response = await axios.post(`${BASE_URL}/users/check-nickname`, {
+      nickname: signupNickname
+    });
+
+    if (response.data.exists) {
+      errorElement.style.display = "block";
+      errorElement.textContent = "이미 사용 중인 닉네임입니다.";
+    } else {
+      errorElement.style.display = "none";
+    }
+  } catch (error) {
+    console.error("닉네임 중복 검사 오류:", error);
+    errorElement.style.display = "block";
+    errorElement.textContent = "닉네임 중복 검사를 할 수 없습니다.";
+  }
+}
+
+document.getElementById("signupId").addEventListener("input", () => {
+  clearTimeout(debounceTimer);
+  debounceTimer = setTimeout(checkIdAvailability, 300);
+});
+
+document.getElementById("signupNickname").addEventListener("input", () => {
+  clearTimeout(debounceTimer);
+  debounceTimer = setTimeout(checkNicknameAvailability, 300);
+});
 
 // 회원가입 폼 제출 처리
 document.getElementById('signupForm').addEventListener('submit', async function (event) {
@@ -238,27 +301,20 @@ document.getElementById('signupForm').addEventListener('submit', async function 
   } else {
     document.getElementById('passwordConfirmError').style.display = 'none';
   }
-
   try {
-    // API 호출 (회원가입)
     const response = await axios.post(`${BASE_URL}/users/signup`, {
       id: signupId,
       password: signupPassword,
       nickname: signupNickname
     });
-
-    // 성공적으로 회원가입된 경우
+  
     alert(response.data); // "회원가입 성공" 메시지
     document.getElementById('signupClose').click(); // 모달 닫기
   } catch (error) {
-    if (error.response) {
-      // 서버에서 반환한 에러 메시지
-      alert(error.response.data);
-    } else {
-      alert(error.response.data);
-    }
-  }
+    alert(error.response.data); 
+  } 
 });
+
 
 // 로그인 폼 제출 처리
 document.getElementById('loginForm').addEventListener('submit', async function (event) {
@@ -272,21 +328,34 @@ document.getElementById('loginForm').addEventListener('submit', async function (
     const response = await axios.post(`${BASE_URL}/users/login`, {
       id: loginId,
       password: loginPassword
-    });
+    }, { withCredentials: true });
 
     // 로그인 성공 시
-    alert(response.data); // "로그인 성공"
+    alert(response.data.message || "로그인 성공");
     document.getElementById('loginClose').click(); // 모달 닫기
-
-    // 로그인 후 처리 예시 (세션 관리 등)
-    // 예: 로그인 후 화면에 사용자 정보 표시 등 추가 작업
+    document.getElementById('loginButton').style.display = 'none';
+    document.getElementById('signupButton').style.display = 'none';
+    document.getElementById('myReviewButton').style.display = 'block';
+    document.getElementById('logoutButton').style.display = 'block';
 
   } catch (error) {
-    if (error.response) {
-      // 서버에서 반환한 에러 메시지
-      alert(error.response.data); 
-    } else {
-      alert(error.response.data);
-    }
+    alert(error.response?.data?.message || "로그인 실패");
+  }
+});
+
+// 로그아웃 처리
+document.getElementById('logoutButton').addEventListener('click', async function () {
+  try {
+    await axios.post(`${BASE_URL}/users/logout`, {}, { withCredentials: true });
+
+    alert("로그아웃 되었습니다!");
+
+    document.getElementById('loginButton').style.display = 'block';
+    document.getElementById('signupButton').style.display = 'block';
+    document.getElementById('myReviewButton').style.display = 'none';
+    document.getElementById('logoutButton').style.display = 'none';
+
+  } catch (error) {
+    alert(error.response?.data?.message || "로그아웃 실패");
   }
 });
