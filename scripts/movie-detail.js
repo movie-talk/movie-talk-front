@@ -192,13 +192,16 @@ function displayMovieDetails(movie) {
   if (!movieDetailContainer) return;
 
   const hasPoster = movie.poster_path;
+  const posterSize = "300px"; // 원하는 포스터 크기 설정
+  
   const posterContent = hasPoster
-    ? `<img src="${MOVIE_IMAGE_URL}${movie.poster_path}" class="img-fluid rounded shadow" alt="${movie.title}">`
-    : `<div class="detail-poster">이미지 준비중입니다.</div>`;
-
+    ? `<img src="${MOVIE_IMAGE_URL}${movie.poster_path}" class="movie-poster img-fluid rounded shadow" alt="${movie.title}">`
+    : `<div class="movie-poster no-poster">이미지 준비중입니다.</div>`;
+  
   const backdropPath = movie.backdrop_path
     ? `${MOVIE_IMAGE_URL}${movie.backdrop_path}`
     : null;
+  
 
   if (backdropPath) {
     document.body.style.backgroundImage = `linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url(${backdropPath})`;

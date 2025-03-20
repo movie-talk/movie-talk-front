@@ -451,8 +451,10 @@ function displayMovies2(movies) {
     movieCard.className = "col";
 
     const posterPath = movie.poster_path
-      ? `<img src="https://image.tmdb.org/t/p/w500${movie.poster_path}" class="movie-poster card-img-top" alt="${movie.title}">`
-      : `<div class="main-poster">이미지 준비 중</div>`;
+  ? `<img src="https://image.tmdb.org/t/p/w500${movie.poster_path}" class="movie-poster card-img-top" alt="${movie.title}">`
+  : `<div class="movie-poster-placeholder card-img-top d-flex align-items-center justify-content-center">
+        이미지 준비 중
+     </div>`;
 
     movieCard.innerHTML = `
             <div class="card movie-card">
