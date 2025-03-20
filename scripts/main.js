@@ -1,4 +1,5 @@
 let debounceTimer;
+let userId;
 
 const idRegex = /^[a-zA-Z0-9]{6,12}$/;
 const passwordRegex =
@@ -162,6 +163,8 @@ const checkAuthStatus = async () => {
     withCredentials: true,
   });
 
+  userId = response.data.id
+
   const loginButton = document.getElementById("loginButton");
   const signupButton = document.getElementById("signupButton");
   const myReviewButton = document.getElementById("myReviewButton");
@@ -228,7 +231,7 @@ const displayMovies = (movies) => {
                     }/10</p>
                     <a href="movie-detail.html?movieId=${
                       movie.id
-                    }" class="btn btn-primary w-100">상세 정보</a>
+                    }&userId=${userId}" class="btn btn-primary w-100">상세 정보</a>
                 </div>
             </div>
         `;
