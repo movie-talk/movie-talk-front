@@ -387,7 +387,7 @@ document
 
       alert(response.data);
 
-      location.reload();
+      location.href="/main.html";
     } catch (error) {
       alert(error.response.data);
     }
@@ -450,33 +450,35 @@ function displayMovies2(movies) {
     const movieCard = document.createElement("div");
     movieCard.className = "col";
 
+    console.log(movie.id);
     const posterPath = movie.poster_path
   ? `<img src="https://image.tmdb.org/t/p/w500${movie.poster_path}" class="movie-poster card-img-top" alt="${movie.title}">`
   : `<div class="movie-poster-placeholder card-img-top d-flex align-items-center justify-content-center">
         이미지 준비 중
      </div>`;
 
-    movieCard.innerHTML = `
-            <div class="card movie-card">
-                ${posterPath}
-                <div class="card-body">
-                    <h5 class="card-title text-truncate">${movie.title}</h5>
-                    <p class="card-text">
-                        <small class="text-muted">개봉일: ${
-                          movie.release_date || "정보 없음"
-                        }</small>
-                    </p>
-                    <p class="card-text">평점: ${
-                      movie.vote_average
-                        ? movie.vote_average.toFixed(1)
-                        : "정보 없음"
-                    }/10</p>
-                    <a href="movie-detail.html?id=${
-                      movie.id
-                    }" class="btn custom-btn w-100">상세 정보</a>
-                </div>
-            </div>
-        `;
+     movieCard.innerHTML = `
+     <div class="card movie-card">
+         ${posterPath}
+         <div class="card-body">
+             <h5 class="card-title text-truncate">${movie.title}</h5>
+             <p class="card-text">
+                 <small class="text-muted">개봉일: ${
+                   movie.release_date || "정보 없음"
+                 }</small>
+             </p>
+             <p class="card-text">평점: ${
+               movie.vote_average
+                 ? movie.vote_average.toFixed(1)
+                 : "정보 없음"
+             }/10</p>
+             <a href="movie-detail.html?movieId=${
+               movie.id
+             }&userId=${userId}" class="btn btn-primary w-100">상세 정보</a>
+         </div>
+     </div>
+ `;
+
 
     moviesContainer.appendChild(movieCard);
   });
