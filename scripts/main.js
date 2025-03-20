@@ -132,7 +132,6 @@ document
     validateForm("signup"); // 회원가입 폼 유효성 검사
   });
 
-
 // 모달이 닫힐 때 입력 필드 초기화
 document
   .getElementById("loginModal")
@@ -155,7 +154,34 @@ document
 
 document.addEventListener("DOMContentLoaded", () => {
   fetchMovies();
+  checkAuthStatus();
 });
+
+const checkAuthStatus = async () => {
+  const response = await axios.get(`${BASE_URL}/users/me`, {
+    withCredentials: true,
+  });
+
+  const loginButton = document.getElementById("loginButton");
+  const signupButton = document.getElementById("signupButton");
+  const myReviewButton = document.getElementById("myReviewButton");
+  const logoutButton = document.getElementById("logoutButton");
+
+  loginButton.innerHTML = response.data
+    ? null
+    : `<button class="nav-link text-white">로그인</button>`;
+
+  signupButton.innerHTML = response.data
+    ? null
+    : `<button class="nav-link text-white">회원가입</button>`;
+
+  myReviewButton.innerHTML = response.data
+    ? `<a class="nav-link text-white" href="/review.html?userId=${response.data.id}">마이리뷰</a>`
+    : null;
+  logoutButton.innerHTML = response.data
+    ? `<button class="nav-link text-white">로그아웃</button>`
+    : null;
+};
 
 const fetchMovies = async () => {
   try {
@@ -172,7 +198,6 @@ const displayMovies = (movies) => {
   const moviesContainer = document.getElementById("movies");
 
   if (!moviesContainer) return;
-  console.log(movies);
 
   moviesContainer.innerHTML = "";
 
@@ -201,7 +226,7 @@ const displayMovies = (movies) => {
                         ? movie.vote_average.toFixed(1)
                         : "정보 없음"
                     }/10</p>
-                    <a href="movie-detail.html?id=${
+                    <a href="movie-detail.html?movieId=${
                       movie.id
                     }" class="btn btn-primary w-100">상세 정보</a>
                 </div>
@@ -218,7 +243,8 @@ async function checkIdAvailability() {
 
   if (!idRegex.test(signupId)) {
     errorElement.style.display = "block";
-    errorElement.textContent = "아이디는 6~12자의 영문, 숫자로 입력해야 합니다.";
+    errorElement.textContent =
+      "아이디는 6~12자의 영문, 숫자로 입력해야 합니다.";
     return;
   }
 
@@ -226,7 +252,7 @@ async function checkIdAvailability() {
     console.log(`Checking ID: ${signupId}`);
 
     const response = await axios.post(`${BASE_URL}/users/check-id`, {
-      id: signupId
+      id: signupId,
     });
 
     console.log("Server Response:", response.data);
@@ -238,14 +264,14 @@ async function checkIdAvailability() {
       errorElement.style.display = "none";
     }
   } catch (error) {
-    console.error("아이디 중복 검사 오류:", error.response?.data || error.message);
+    console.error(
+      "아이디 중복 검사 오류:",
+      error.response?.data || error.message
+    );
     errorElement.style.display = "block";
     errorElement.textContent = "아이디 중복 검사를 할 수 없습니다.";
   }
 }
-
-
-
 
 async function checkNicknameAvailability() {
   const signupNickname = document.getElementById("signupNickname").value;
@@ -253,13 +279,14 @@ async function checkNicknameAvailability() {
 
   if (!nicknameRegex.test(signupNickname)) {
     errorElement.style.display = "block";
-    errorElement.textContent = "닉네임은 2~10자의 한글, 영문, 숫자로 입력해야 합니다.";
+    errorElement.textContent =
+      "닉네임은 2~10자의 한글, 영문, 숫자로 입력해야 합니다.";
     return;
   }
 
   try {
     const response = await axios.post(`${BASE_URL}/users/check-nickname`, {
-      nickname: signupNickname
+      nickname: signupNickname,
     });
 
     if (response.data.exists) {
@@ -286,105 +313,127 @@ document.getElementById("signupNickname").addEventListener("input", () => {
 });
 
 // 회원가입 폼 제출 처리
-document.getElementById('signupForm').addEventListener('submit', async function (event) {
-  event.preventDefault(); // 폼 제출 시 페이지 새로고침 방지
+document
+  .getElementById("signupForm")
+  .addEventListener("submit", async function (event) {
+    event.preventDefault(); // 폼 제출 시 페이지 새로고침 방지
 
-  const signupId = document.getElementById('signupId').value;
-  const signupPassword = document.getElementById('signupPassword').value;
-  const signupPasswordConfirm = document.getElementById('signupPasswordConfirm').value;
-  const signupNickname = document.getElementById('signupNickname').value;
+    const signupId = document.getElementById("signupId").value;
+    const signupPassword = document.getElementById("signupPassword").value;
+    const signupPasswordConfirm = document.getElementById(
+      "signupPasswordConfirm"
+    ).value;
+    const signupNickname = document.getElementById("signupNickname").value;
 
-  // 입력 값 검증
-  if (signupPassword !== signupPasswordConfirm) {
-    document.getElementById('passwordConfirmError').style.display = 'block';
-    return;
-  } else {
-    document.getElementById('passwordConfirmError').style.display = 'none';
-  }
-  try {
-    const response = await axios.post(`${BASE_URL}/users/signup`, {
-      id: signupId,
-      password: signupPassword,
-      nickname: signupNickname
-    });
-  
-    alert(response.data); // "회원가입 성공" 메시지
-    document.getElementById('signupClose').click(); // 모달 닫기
-  } catch (error) {
-    alert(error.response.data); 
-  } 
-});
+    // 입력 값 검증
+    if (signupPassword !== signupPasswordConfirm) {
+      document.getElementById("passwordConfirmError").style.display = "block";
+      return;
+    } else {
+      document.getElementById("passwordConfirmError").style.display = "none";
+    }
+    try {
+      const response = await axios.post(`${BASE_URL}/users/signup`, {
+        id: signupId,
+        password: signupPassword,
+        nickname: signupNickname,
+      });
 
+      alert(response.data); // "회원가입 성공" 메시지
+      document.getElementById("signupClose").click(); // 모달 닫기
+    } catch (error) {
+      alert(error.response.data);
+    }
+  });
 
 // 로그인 폼 제출 처리
-document.getElementById('loginForm').addEventListener('submit', async function (event) {
-  event.preventDefault(); // 폼 제출 시 페이지 새로고침 방지
+document
+  .getElementById("loginForm")
+  .addEventListener("submit", async function (event) {
+    event.preventDefault(); // 폼 제출 시 페이지 새로고침 방지
 
-  const loginId = document.getElementById('loginId').value;
-  const loginPassword = document.getElementById('loginPassword').value;
+    const loginId = document.getElementById("loginId").value;
+    const loginPassword = document.getElementById("loginPassword").value;
 
-  try {
-    // API 호출 (로그인)
-    const response = await axios.post(`${BASE_URL}/users/login`, {
-      id: loginId,
-      password: loginPassword
-    }, { withCredentials: true });
+    try {
+      // API 호출 (로그인)
+      const response = await axios.post(
+        `${BASE_URL}/users/login`,
+        {
+          id: loginId,
+          password: loginPassword,
+        },
+        { withCredentials: true }
+      );
 
-    // 로그인 성공 시
-    alert(response.data.message || "로그인 성공");
-    document.getElementById('loginClose').click(); // 모달 닫기
-    document.getElementById('loginButton').style.display = 'none';
-    document.getElementById('signupButton').style.display = 'none';
-    document.getElementById('myReviewButton').style.display = 'block';
-    document.getElementById('logoutButton').style.display = 'block';
-
-  } catch (error) {
-    alert(error.response?.data?.message || "로그인 실패");
-  }
-});
+      // 로그인 성공 시
+      alert(response.data);
+      document.getElementById("loginClose").click(); // 모달 닫기
+      location.reload();
+    } catch (error) {
+      alert(error.response.data);
+    }
+  });
 
 // 로그아웃 처리
-document.getElementById('logoutButton').addEventListener('click', async function () {
-  try {
-    await axios.post(`${BASE_URL}/users/logout`, {}, { withCredentials: true });
+document
+  .getElementById("logoutButton")
+  .addEventListener("click", async function () {
+    try {
+      const response = await axios.post(`${BASE_URL}/users/logout`, {
+        withCredentials: true,
+      });
 
-    alert("로그아웃 되었습니다!");
+      alert(response.data);
 
-    document.getElementById('loginButton').style.display = 'block';
-    document.getElementById('signupButton').style.display = 'block';
-    document.getElementById('myReviewButton').style.display = 'none';
-    document.getElementById('logoutButton').style.display = 'none';
+      location.reload();
+    } catch (error) {
+      alert(error.response.data);
+    }
+  });
 
-  } catch (error) {
-    alert(error.response?.data?.message || "로그아웃 실패");
-  }
-});
+document
+  .getElementById("myReviewButton")
+  .addEventListener("click", async function () {
+    try {
+      const response = await axios.post(`${BASE_URL}/users/logout`, {
+        withCredentials: true,
+      });
 
+      alert(response.data);
+    } catch (error) {
+      alert(error.response.data);
+    }
+  });
 
+document
+  .getElementById("searchForm")
+  .addEventListener("submit", function (event) {
+    event.preventDefault(); // 폼 제출 방지
+    const query = document.getElementById("searchInput").value.trim();
 
-document.getElementById("searchForm").addEventListener("submit", function (event) {
-  event.preventDefault(); // 폼 제출 방지
-  const query = document.getElementById("searchInput").value.trim();
+    if (query === "") {
+      alert("검색어를 입력하세요!");
+      return;
+    }
 
-  if (query === "") {
-    alert("검색어를 입력하세요!");
-    return;
-  }
-
-  searchMovies(query);
-  searchInput.value = "";
-});
+    searchMovies(query);
+    searchInput.value = "";
+  });
 
 function searchMovies(query) {
   const apiKey = "e82db80f9be0ebd98345d4ec3396ad2e"; // 🔹 여기에 실제 API 키 입력
-  const url = `https://api.themoviedb.org/3/search/movie?api_key=${apiKey}&language=ko-KR&query=${encodeURIComponent(query)}`;
+  const url = `https://api.themoviedb.org/3/search/movie?api_key=${apiKey}&language=ko-KR&query=${encodeURIComponent(
+    query
+  )}`;
 
-  axios.get(url)
-    .then(response => {
+  axios
+    .get(url)
+    .then((response) => {
       const movies = response.data.results;
       displayMovies2(movies);
     })
-    .catch(error => {
+    .catch((error) => {
       console.error("검색 오류:", error);
     });
 }
@@ -393,7 +442,6 @@ function displayMovies2(movies) {
   const moviesContainer = document.getElementById("movies");
 
   if (!moviesContainer) return;
-  console.log(movies);
 
   moviesContainer.innerHTML = "";
 
@@ -402,14 +450,12 @@ function displayMovies2(movies) {
     movieCard.className = "col";
 
     const posterPath = movie.poster_path
-      ? `https://image.tmdb.org/t/p/w500${movie.poster_path}`
-      : "https://via.placeholder.com/500x750?text=No+Image";
+      ? `<img src="https://image.tmdb.org/t/p/w500${movie.poster_path}" class="movie-poster card-img-top" alt="${movie.title}">`
+      : `<div class="main-poster">이미지 준비 중</div>`;
 
     movieCard.innerHTML = `
             <div class="card movie-card">
-                <img src="${posterPath}" class="movie-poster card-img-top" alt="${
-      movie.title
-    }">
+                ${posterPath}
                 <div class="card-body">
                     <h5 class="card-title text-truncate">${movie.title}</h5>
                     <p class="card-text">
@@ -422,7 +468,9 @@ function displayMovies2(movies) {
                         ? movie.vote_average.toFixed(1)
                         : "정보 없음"
                     }/10</p>
-                    <a href="movie-detail.html?id=${movie.id}" class="btn custom-btn w-100">상세 정보</a>
+                    <a href="movie-detail.html?id=${
+                      movie.id
+                    }" class="btn custom-btn w-100">상세 정보</a>
                 </div>
             </div>
         `;
