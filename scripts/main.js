@@ -209,14 +209,12 @@ const displayMovies = (movies) => {
     movieCard.className = "col";
 
     const posterPath = movie.poster_path
-      ? `https://image.tmdb.org/t/p/w500${movie.poster_path}`
-      : "https://via.placeholder.com/500x750?text=No+Image";
+      ? `<img src="https://image.tmdb.org/t/p/w500${movie.poster_path}" class="movie-poster card-img-top" alt="${movie.title}">`
+      : `<div class="main-poster">이미지 준비 중</div>`;
 
     movieCard.innerHTML = `
             <div class="card movie-card">
-                <img src="${posterPath}" class="movie-poster card-img-top" alt="${
-      movie.title
-    }">
+                ${posterPath}
                 <div class="card-body">
                     <h5 class="card-title text-truncate">${movie.title}</h5>
                     <p class="card-text">
